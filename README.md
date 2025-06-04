@@ -1,4 +1,3 @@
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -431,6 +430,18 @@
             height: auto;
         }
 
+        .logo-upload-container {
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .logo-preview {
+            max-width: 200px;
+            max-height: 100px;
+            margin-top: 1rem;
+            display: none;
+        }
+
         @media (max-width: 768px) {
             .nav {
                 flex-direction: column;
@@ -489,10 +500,21 @@
         <div id="adminView" class="hidden">
             <div class="hero">
                 <div class="admin-logo">
-                    <img src="https://via.placeholder.com/200x100?text=Lure+Kings+Logo" alt="Lure Kings Logo">
+                    <img id="companyLogo" src="" alt="Lure Kings Logo">
                 </div>
                 <h1>Admin Dashboard</h1>
                 <p>Manage your Lure Kings inventory</p>
+            </div>
+
+            <div class="logo-upload-container">
+                <h3>Upload Company Logo</h3>
+                <div class="file-upload-area" onclick="document.getElementById('logoUpload').click()">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: #1a365d; margin-bottom: 0.5rem;"></i>
+                    <p>Click to upload logo or drag & drop</p>
+                    <p style="font-size: 0.9rem; opacity: 0.7;">Supports JPG, PNG</p>
+                </div>
+                <input type="file" id="logoUpload" accept="image/*" style="display: none;">
+                <img id="logoPreview" class="logo-preview">
             </div>
 
             <div class="admin-form">
@@ -578,34 +600,45 @@
                 </p>
             </div>
 
-            <div class="checkout-form">
-                <form id="checkoutForm">
-                    <div class="form-group">
-                        <label for="customerName">Full Name</label>
-                        <input type="text" id="customerName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="customerEmail">Email Address</label>
-                        <input type="email" id="customerEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="customerPhone">Phone Number</label>
-                        <input type="tel" id="customerPhone" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="customerAddress">Delivery Address</label>
-                        <textarea id="customerAddress" rows="3" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="orderNotes">Order Notes (Optional)</label>
-                        <textarea id="orderNotes" rows="2" placeholder="Any special instructions..."></textarea>
-                    </div>
-                    <div class="cart-total" id="checkoutTotal">Total: $0.00</div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
-                        Place Order
-                    </button>
-                </form>
-            </div>
+            <!-- Using FormSubmit to send emails -->
+            <form id="checkoutForm" action="https://formsubmit.co/lure.kings.fishing.aus@gmail.com" method="POST">
+                <input type="hidden" name="_subject" value="New Order from Lure Kings">
+                <input type="hidden" name="_template" value="table">
+                <input type="hidden" name="_next" value="https://yourwebsite.com/thank-you.html">
+                <input type="hidden" name="_cc" value="lure.kings.fishing.aus@gmail.com">
+                <input type="hidden" name="_autoresponse" value="Thank you for your order! We'll process it shortly.">
+                
+                <div class="form-group">
+                    <label for="customerName">Full Name</label>
+                    <input type="text" id="customerName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerEmail">Email Address</label>
+                    <input type="email" id="customerEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerPhone">Phone Number</label>
+                    <input type="tel" id="customerPhone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerAddress">Delivery Address</label>
+                    <textarea id="customerAddress" name="address" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="orderNotes">Order Notes (Optional)</label>
+                    <textarea id="orderNotes" name="notes" rows="2" placeholder="Any special instructions..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Order Items</label>
+                    <div id="orderItemsDisplay"></div>
+                </div>
+                <div class="cart-total" id="checkoutTotal">Total: $0.00</div>
+                <input type="hidden" id="orderItems" name="order_items">
+                <input type="hidden" id="orderTotal" name="order_total">
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                    Place Order
+                </button>
+            </form>
         </div>
     </div>
 
@@ -665,9 +698,18 @@
             renderAdminProducts();
             setupEventListeners();
             setupImageUpload();
+            setupLogoUpload();
             
             // Add crown click listener
             document.getElementById('logo').addEventListener('click', handleCrownClick);
+            
+            // Load saved logo from localStorage if exists
+            const savedLogo = localStorage.getItem('companyLogo');
+            if (savedLogo) {
+                document.getElementById('companyLogo').src = savedLogo;
+                document.getElementById('logoPreview').src = savedLogo;
+                document.getElementById('logoPreview').style.display = 'block';
+            }
         }
 
         function handleCrownClick() {
@@ -695,28 +737,77 @@
 
             // Checkout form submission
             document.getElementById('checkoutForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                processCheckout();
-            });
-
-            // Admin login form submission
-            document.getElementById('adminLoginForm')?.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const password = document.getElementById('adminPassword').value;
-                if (password === ADMIN_PASSWORD) {
-                    isAdminLoggedIn = true;
-                    closeAdminLogin();
-                    showView('admin');
-                    document.getElementById('adminPassword').value = '';
-                } else {
-                    alert('Incorrect password!');
-                }
+                // Prepare order details for email
+                const orderItems = cart.map(item => 
+                    `${item.name} (${item.quantity} x $${item.price.toFixed(2)}) = $${(item.quantity * item.price).toFixed(2)}`
+                ).join('\n');
+                
+                document.getElementById('orderItems').value = orderItems;
+                document.getElementById('orderTotal').value = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
+                
+                // Reset cart after submission
+                cart = [];
+                updateCartCount();
+                localStorage.setItem('cart', JSON.stringify(cart));
             });
 
             // Image upload handling
             document.getElementById('imageUpload').addEventListener('change', function(e) {
                 handleImageUpload(e);
             });
+        }
+
+        function setupLogoUpload() {
+            const uploadArea = document.querySelector('.logo-upload-container .file-upload-area');
+            const fileInput = document.getElementById('logoUpload');
+            const preview = document.getElementById('logoPreview');
+            const logoDisplay = document.getElementById('companyLogo');
+            
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.style.borderColor = '#1a365d';
+            });
+            
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.style.borderColor = '#ddd';
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.style.borderColor = '#ddd';
+                
+                if (e.dataTransfer.files.length) {
+                    fileInput.files = e.dataTransfer.files;
+                    handleLogoUpload({ target: fileInput });
+                }
+            });
+            
+            fileInput.addEventListener('change', handleLogoUpload);
+        }
+
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (!file.type.match('image.*')) {
+                alert('Please select an image file');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('logoPreview');
+                const logoDisplay = document.getElementById('companyLogo');
+                
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                
+                logoDisplay.src = e.target.result;
+                
+                // Save to localStorage
+                localStorage.setItem('companyLogo', e.target.result);
+            };
+            reader.readAsDataURL(file);
         }
 
         // View management
@@ -779,6 +870,7 @@
             
             updateCartCount();
             showToast(`${product.name} added to cart`);
+            localStorage.setItem('cart', JSON.stringify(cart));
         }
 
         function updateCartCount() {
@@ -800,14 +892,17 @@
             const modal = document.getElementById('cartModal');
             const cartItems = document.getElementById('cartItems');
             const cartTotal = document.getElementById('cartTotal');
+            const orderItemsDisplay = document.getElementById('orderItemsDisplay');
             
             cartItems.innerHTML = '';
             
             if (cart.length === 0) {
                 cartItems.innerHTML = '<p>Your cart is empty</p>';
                 cartTotal.textContent = 'Total: $0.00';
+                orderItemsDisplay.innerHTML = '<p>No items</p>';
             } else {
                 let total = 0;
+                let orderItemsHTML = '<ul style="list-style-type: none; padding: 0;">';
                 
                 cart.forEach(item => {
                     const itemTotal = item.price * item.quantity;
@@ -830,7 +925,16 @@
                         <button class="remove-item" onclick="removeFromCart(${item.id})">Remove</button>
                     `;
                     cartItems.appendChild(cartItem);
+                    
+                    orderItemsHTML += `
+                        <li style="margin-bottom: 0.5rem; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">
+                            ${item.name} - ${item.quantity} x $${item.price.toFixed(2)} = $${itemTotal.toFixed(2)}
+                        </li>
+                    `;
                 });
+                
+                orderItemsHTML += '</ul>';
+                orderItemsDisplay.innerHTML = orderItemsHTML;
                 
                 cartTotal.textContent = `Total: $${total.toFixed(2)}`;
                 document.getElementById('checkoutTotal').textContent = `Total: $${total.toFixed(2)}`;
@@ -854,6 +958,7 @@
             } else {
                 updateCartCount();
                 showCart(); // Refresh cart display
+                localStorage.setItem('cart', JSON.stringify(cart));
             }
         }
 
@@ -861,6 +966,7 @@
             cart = cart.filter(item => item.id !== productId);
             updateCartCount();
             showCart(); // Refresh cart display
+            localStorage.setItem('cart', JSON.stringify(cart));
         }
 
         // Checkout functionality
@@ -871,68 +977,6 @@
 
         function closeCheckout() {
             document.getElementById('checkoutModal').style.display = 'none';
-        }
-
-        function processCheckout() {
-            const name = document.getElementById('customerName').value;
-            const email = document.getElementById('customerEmail').value;
-            
-            if (cart.length === 0) {
-                alert('Your cart is empty!');
-                return;
-            }
-            
-            // Generate order number
-            const orderNumber = 'LK-' + Date.now().toString().slice(-6);
-            
-            // Prepare order details
-            const order = {
-                orderNumber,
-                customer: { name, email },
-                items: cart,
-                total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-                date: new Date().toISOString()
-            };
-            
-            // In a real app, you would send this data to your server
-            console.log('Order placed:', order);
-            
-            // Send email (simulated - in a real app you would use a backend service)
-            sendOrderEmail(order);
-            
-            alert(`Order #${orderNumber} placed successfully!\nA confirmation has been sent to ${email}`);
-            
-            // Reset cart and close modals
-            cart = [];
-            updateCartCount();
-            closeCheckout();
-            document.getElementById('checkoutForm').reset();
-        }
-
-        function sendOrderEmail(order) {
-            // This is a simulation - in a real app you would use a backend service
-            // to send emails to both the customer and your business email
-            
-            const emailContent = `
-                Order #${order.orderNumber}
-                Date: ${new Date(order.date).toLocaleString()}
-                Customer: ${order.customer.name}
-                Email: ${order.customer.email}
-                
-                Items:
-                ${order.items.map(item => `
-                - ${item.name} (${item.quantity} x $${item.price.toFixed(2)}) = $${(item.quantity * item.price).toFixed(2)}
-                `).join('')}
-                
-                Total: $${order.total.toFixed(2)}
-                
-                Thank you for your order!
-                Lure Kings Team
-            `;
-            
-            console.log('Email sent to customer:', order.customer.email);
-            console.log('Email sent to business:', 'lure.kings.fishing.aus@gmail.com');
-            console.log('Email content:', emailContent);
         }
 
         // Admin functionality
@@ -1045,7 +1089,7 @@
 
         // Image upload handling
         function setupImageUpload() {
-            const uploadArea = document.querySelector('.file-upload-area');
+            const uploadArea = document.querySelector('.admin-form .file-upload-area');
             const fileInput = document.getElementById('imageUpload');
             const preview = document.getElementById('imagePreview');
             
