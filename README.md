@@ -1,4 +1,3 @@
-# index.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,20 +14,18 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d3748 50%, #1a365d 100%);
-            min-height: 100vh;
-            color: #ffffff;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
         }
 
         .header {
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(15px);
+            background-color: #1a365d;
             padding: 1rem 2rem;
-            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
             position: sticky;
             top: 0;
             z-index: 1000;
-            border-bottom: 2px solid #3b82f6;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .nav {
@@ -40,18 +37,18 @@
         }
 
         .logo {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: bold;
-            color: #3b82f6;
-            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+            color: white;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            cursor: pointer;
         }
 
         .logo i {
-            font-size: 2rem;
-            color: #60a5fa;
+            font-size: 1.8rem;
+            color: #f8d56b;
         }
 
         .nav-buttons {
@@ -61,37 +58,27 @@
         }
 
         .btn {
-            padding: 0.75rem 1.5rem;
+            padding: 0.5rem 1rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 4px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 0.9rem;
+            transition: all 0.2s ease;
         }
 
         .btn-primary {
-            background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+            background-color: #1a365d;
             color: white;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            background-color: transparent;
+            color: white;
+            border: 1px solid white;
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(59, 130, 246, 0.6);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: #3b82f6;
+            opacity: 0.9;
         }
 
         .cart-icon {
@@ -102,7 +89,7 @@
             position: absolute;
             top: -8px;
             right: -8px;
-            background: #ef4444;
+            background: #e74c3c;
             color: white;
             border-radius: 50%;
             width: 20px;
@@ -116,134 +103,121 @@
 
         .container {
             max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
+            margin: 2rem auto;
+            padding: 0 1rem;
         }
 
         .hero {
             text-align: center;
-            color: white;
             margin-bottom: 3rem;
             padding: 2rem 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .hero h1 {
-            font-size: 4rem;
+            font-size: 2.5rem;
             margin-bottom: 1rem;
-            text-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
-            background: linear-gradient(45deg, #3b82f6, #60a5fa, #93c5fd);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #1a365d;
         }
 
         .hero p {
-            font-size: 1.2rem;
-            opacity: 0.9;
+            font-size: 1.1rem;
             max-width: 600px;
             margin: 0 auto;
-            color: #e2e8f0;
+            color: #666;
         }
 
         .categories {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 3rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            justify-content: center;
         }
 
         .category-btn {
-            padding: 1rem;
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid rgba(59, 130, 246, 0.3);
-            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #ffffff;
-            backdrop-filter: blur(10px);
+            transition: all 0.2s ease;
         }
 
         .category-btn:hover, .category-btn.active {
-            background: linear-gradient(45deg, #3b82f6, #1d4ed8);
-            border-color: #60a5fa;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+            background: #1a365d;
+            border-color: #1a365d;
+            color: white;
         }
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
             margin-bottom: 3rem;
         }
 
         .product-card {
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            border-radius: 16px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s ease;
-            backdrop-filter: blur(15px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
         }
 
         .product-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.3);
-            border-color: #3b82f6;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .product-image {
             width: 100%;
-            height: 250px;
+            height: 200px;
             object-fit: cover;
-            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+            border-bottom: 1px solid #ddd;
         }
 
         .product-info {
-            padding: 1.5rem;
+            padding: 1rem;
         }
 
         .product-title {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             font-weight: bold;
             margin-bottom: 0.5rem;
-            color: #3b82f6;
+            color: #1a365d;
         }
 
         .product-price {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: bold;
-            color: #60a5fa;
+            color: #e74c3c;
             margin-bottom: 1rem;
         }
 
         .product-description {
-            color: #e2e8f0;
+            color: #666;
             margin-bottom: 1rem;
-            line-height: 1.4;
+            font-size: 0.9rem;
         }
 
         .add-to-cart {
             width: 100%;
-            background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+            background-color: #1a365d;
             color: white;
             border: none;
-            padding: 0.75rem;
-            border-radius: 8px;
+            padding: 0.5rem;
+            border-radius: 4px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
         }
 
         .add-to-cart:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.6);
+            background-color: #142a4a;
         }
 
         .modal {
@@ -253,9 +227,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 2000;
-            backdrop-filter: blur(5px);
         }
 
         .modal-content {
@@ -263,48 +236,43 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, #1a1a1a, #2d3748);
-            border: 2px solid #3b82f6;
-            border-radius: 16px;
+            background: white;
+            border-radius: 8px;
             padding: 2rem;
             max-width: 90%;
             max-height: 90%;
             overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(59, 130, 246, 0.3);
-            color: #ffffff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: #333;
         }
 
         .close {
             position: absolute;
             top: 1rem;
             right: 1rem;
-            font-size: 2rem;
+            font-size: 1.5rem;
             cursor: pointer;
-            color: #e2e8f0;
-            transition: color 0.3s;
+            color: #666;
         }
 
         .close:hover {
-            color: #3b82f6;
+            color: #333;
         }
 
         .cart-item {
             display: flex;
             align-items: center;
             padding: 1rem;
-            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+            border-bottom: 1px solid #ddd;
             gap: 1rem;
-            background: rgba(0, 0, 0, 0.3);
-            margin-bottom: 0.5rem;
-            border-radius: 8px;
         }
 
         .cart-item img {
             width: 60px;
             height: 60px;
             object-fit: cover;
-            border-radius: 8px;
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 4px;
+            border: 1px solid #ddd;
         }
 
         .cart-item-info {
@@ -314,7 +282,7 @@
         .cart-item-title {
             font-weight: bold;
             margin-bottom: 0.25rem;
-            color: #3b82f6;
+            color: #1a365d;
         }
 
         .quantity-controls {
@@ -325,57 +293,52 @@
         }
 
         .quantity-btn {
-            background: #3b82f6;
+            background: #1a365d;
             color: white;
             border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            border-radius: 4px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
         }
 
         .quantity-btn:hover {
-            background: #1d4ed8;
-            transform: scale(1.1);
+            background: #142a4a;
         }
 
         .remove-item {
-            background: #ef4444;
+            background: #e74c3c;
             color: white;
             border: none;
             padding: 0.25rem 0.5rem;
-            border-radius: 5px;
+            border-radius: 4px;
             cursor: pointer;
             font-size: 0.8rem;
-            transition: all 0.3s ease;
         }
 
         .remove-item:hover {
-            background: #dc2626;
-            transform: scale(1.05);
+            background: #c0392b;
         }
 
         .cart-total {
             text-align: center;
             padding: 1rem;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: bold;
-            color: #3b82f6;
-            border-top: 2px solid rgba(59, 130, 246, 0.3);
+            color: #1a365d;
+            border-top: 1px solid #ddd;
             margin-top: 1rem;
         }
 
         .admin-form {
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            padding: 2rem;
-            border-radius: 16px;
+            background: white;
+            border: 1px solid #ddd;
+            padding: 1.5rem;
+            border-radius: 8px;
             margin-bottom: 2rem;
-            backdrop-filter: blur(15px);
         }
 
         .form-group {
@@ -386,24 +349,20 @@
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 600;
-            color: #3b82f6;
+            color: #1a365d;
         }
 
         .form-group input, .form-group textarea, .form-group select {
             width: 100%;
-            padding: 0.75rem;
-            border: 2px solid rgba(59, 130, 246, 0.3);
-            border-radius: 8px;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             font-size: 1rem;
-            transition: border-color 0.3s;
-            background: rgba(0, 0, 0, 0.5);
-            color: #ffffff;
         }
 
         .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
             outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+            border-color: #1a365d;
         }
 
         .hidden {
@@ -415,38 +374,17 @@
             margin: 0 auto;
         }
 
-        .admin-access-info {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-            color: #e2e8f0;
-        }
-
-        .admin-access-info h3 {
-            color: #3b82f6;
-            margin-bottom: 0.5rem;
-        }
-
         .file-upload-area {
-            border: 2px dashed rgba(59, 130, 246, 0.5);
+            border: 2px dashed #ddd;
             border-radius: 8px;
-            padding: 2rem;
+            padding: 1.5rem;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            background: rgba(59, 130, 246, 0.1);
+            margin-bottom: 1rem;
         }
 
         .file-upload-area:hover {
-            border-color: #3b82f6;
-            background: rgba(59, 130, 246, 0.2);
-        }
-
-        .file-upload-area.dragover {
-            border-color: #60a5fa;
-            background: rgba(59, 130, 246, 0.3);
+            border-color: #1a365d;
         }
 
         .image-preview {
@@ -454,20 +392,43 @@
             max-height: 200px;
             border-radius: 8px;
             margin-top: 1rem;
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            border: 1px solid #ddd;
         }
 
         .payment-info {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: #f9f9f9;
+            border: 1px solid #ddd;
             padding: 1rem;
             border-radius: 8px;
             margin-bottom: 1rem;
         }
 
         .payment-info h4 {
-            color: #3b82f6;
+            color: #1a365d;
             margin-bottom: 0.5rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1a365d;
+            color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 3000;
+            display: none;
+        }
+
+        .admin-logo {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-logo img {
+            max-width: 200px;
+            height: auto;
         }
 
         @media (max-width: 768px) {
@@ -477,19 +438,11 @@
             }
 
             .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .categories {
-                grid-template-columns: repeat(2, 1fr);
+                font-size: 2rem;
             }
 
             .products-grid {
                 grid-template-columns: 1fr;
-            }
-
-            .logo {
-                font-size: 2rem;
             }
         }
     </style>
@@ -497,13 +450,12 @@
 <body>
     <header class="header">
         <nav class="nav">
-            <div class="logo">
+            <div class="logo" id="logo">
                 <i class="fas fa-crown"></i>
                 Lure Kings
             </div>
             <div class="nav-buttons">
                 <button class="btn btn-secondary" onclick="showView('store')">Store</button>
-                <button class="btn btn-secondary" onclick="showAdminLogin()">Admin</button>
                 <button class="btn btn-primary cart-icon" onclick="showCart()">
                     <i class="fas fa-shopping-cart"></i>
                     <span class="cart-count" id="cartCount">0</span>
@@ -512,12 +464,14 @@
         </nav>
     </header>
 
+    <div class="toast" id="toast">Item added to cart!</div>
+
     <div class="container">
         <!-- Store View -->
         <div id="storeView">
             <div class="hero">
                 <h1>Premium Fishing Lures</h1>
-                <p>Rule the waters with our expertly crafted collection of fishing lures designed to help you land the catch of a lifetime</p>
+                <p>High-quality fishing lures for the serious angler</p>
             </div>
 
             <div class="categories">
@@ -526,11 +480,6 @@
                 <button class="category-btn" onclick="filterByCategory('soft-plastics')">Soft Plastics</button>
                 <button class="category-btn" onclick="filterByCategory('topwaters')">Topwaters</button>
                 <button class="category-btn" onclick="filterByCategory('spinnerbaits')">Spinnerbaits</button>
-                <button class="category-btn" onclick="filterByCategory('vibrating-bladed-jigs')">Vibrating/Bladed Jigs</button>
-                <button class="category-btn" onclick="filterByCategory('crankbaits')">Crankbaits</button>
-                <button class="category-btn" onclick="filterByCategory('jerkbaits')">Jerkbaits</button>
-                <button class="category-btn" onclick="filterByCategory('swimbaits')">Swimbaits</button>
-                <button class="category-btn" onclick="filterByCategory('flies')">Flies</button>
             </div>
 
             <div class="products-grid" id="productsGrid"></div>
@@ -539,94 +488,58 @@
         <!-- Admin View -->
         <div id="adminView" class="hidden">
             <div class="hero">
-                <h1><i class="fas fa-crown"></i> Admin Dashboard</h1>
-                <p>Manage your Lure Kings inventory and settings</p>
-            </div>
-
-            <div class="admin-access-info">
-                <h3><i class="fas fa-info-circle"></i> Admin Access Instructions</h3>
-                <p><strong>Easy Access Method:</strong> Add <code>#admin</code> to your website URL (e.g., yourwebsite.com#admin)</p>
-                <p><strong>Current Password:</strong> <code>lureking2024</code></p>
-                <p><strong>To change password:</strong> Edit the ADMIN_PASSWORD variable in the JavaScript code</p>
+                <div class="admin-logo">
+                    <img src="https://via.placeholder.com/200x100?text=Lure+Kings+Logo" alt="Lure Kings Logo">
+                </div>
+                <h1>Admin Dashboard</h1>
+                <p>Manage your Lure Kings inventory</p>
             </div>
 
             <div class="admin-form">
-                <h2 style="margin-bottom: 1rem; color: #3b82f6;"><i class="fas fa-plus-circle"></i> Add New Product</h2>
+                <h2 style="margin-bottom: 1rem; color: #1a365d;">Add New Product</h2>
                 <form id="productForm">
                     <div class="form-group">
-                        <label for="productName"><i class="fas fa-tag"></i> Product Name</label>
+                        <label for="productName">Product Name</label>
                         <input type="text" id="productName" required>
                     </div>
                     <div class="form-group">
-                        <label for="productCategory"><i class="fas fa-list"></i> Category</label>
+                        <label for="productCategory">Category</label>
                         <select id="productCategory" required>
                             <option value="">Select Category</option>
                             <option value="jigs">Jigs</option>
                             <option value="soft-plastics">Soft Plastics</option>
                             <option value="topwaters">Topwaters</option>
                             <option value="spinnerbaits">Spinnerbaits</option>
-                            <option value="vibrating-bladed-jigs">Vibrating/Bladed Jigs</option>
-                            <option value="crankbaits">Crankbaits</option>
-                            <option value="jerkbaits">Jerkbaits</option>
-                            <option value="swimbaits">Swimbaits</option>
-                            <option value="flies">Flies</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="productPrice"><i class="fas fa-dollar-sign"></i> Price ($)</label>
+                        <label for="productPrice">Price ($)</label>
                         <input type="number" id="productPrice" step="0.01" min="0" required>
                     </div>
                     <div class="form-group">
-                        <label for="productDescription"><i class="fas fa-align-left"></i> Description</label>
+                        <label for="productDescription">Description</label>
                         <textarea id="productDescription" rows="3" required></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="productImage"><i class="fas fa-image"></i> Product Image</label>
+                        <label for="productImage">Product Image</label>
                         <div class="file-upload-area" onclick="document.getElementById('imageUpload').click()">
-                            <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: #3b82f6; margin-bottom: 0.5rem;"></i>
+                            <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: #1a365d; margin-bottom: 0.5rem;"></i>
                             <p>Click to upload image or drag & drop</p>
                             <p style="font-size: 0.9rem; opacity: 0.7;">Supports JPG, PNG, GIF</p>
                         </div>
                         <input type="file" id="imageUpload" accept="image/*" style="display: none;">
-                        <input type="url" id="productImage" placeholder="Or enter image URL" style="margin-top: 0.5rem;">
+                        <input type="url" id="productImage" placeholder="Or enter image URL">
                         <img id="imagePreview" class="image-preview" style="display: none;">
                     </div>
                     <button type="submit" class="btn btn-primary" style="width: 100%;">
-                        <i class="fas fa-plus"></i> Add Product
+                        Add Product
                     </button>
                 </form>
             </div>
 
             <div class="admin-form">
-                <h2 style="margin-bottom: 1rem; color: #3b82f6;"><i class="fas fa-cog"></i> Manage Existing Products</h2>
+                <h2 style="margin-bottom: 1rem; color: #1a365d;">Manage Existing Products</h2>
                 <div id="adminProductsList"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Admin Login Modal -->
-    <div id="adminLoginModal" class="modal">
-        <div class="modal-content" style="max-width: 400px;">
-            <span class="close" onclick="closeAdminLogin()">&times;</span>
-            <h2 style="margin-bottom: 1rem; color: #3b82f6; text-align: center;">
-                <i class="fas fa-crown"></i> Admin Login
-            </h2>
-            <form id="adminLoginForm" class="checkout-form">
-                <div class="form-group">
-                    <label for="adminPassword"><i class="fas fa-lock"></i> Password</label>
-                    <input type="password" id="adminPassword" required placeholder="Enter admin password">
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </button>
-            </form>
-            <div style="text-align: center; margin-top: 1rem; padding: 1rem; background: rgba(59, 130, 246, 0.1); border-radius: 8px;">
-                <p style="font-size: 0.9rem; color: #e2e8f0; margin-bottom: 0.5rem;">
-                    <i class="fas fa-info-circle"></i> Quick Access Tip
-                </p>
-                <p style="font-size: 0.85rem; color: #94a3b8;">
-                    Add <code>#admin</code> to your URL for direct access
-                </p>
             </div>
         </div>
     </div>
@@ -635,13 +548,13 @@
     <div id="cartModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeCart()">&times;</span>
-            <h2 style="margin-bottom: 1rem; color: #3b82f6;">
-                <i class="fas fa-shopping-cart"></i> Shopping Cart
+            <h2 style="margin-bottom: 1rem; color: #1a365d;">
+                Shopping Cart
             </h2>
             <div id="cartItems"></div>
             <div class="cart-total" id="cartTotal">Total: $0.00</div>
             <button class="btn btn-primary" onclick="showCheckout()" style="width: 100%; margin-top: 1rem;">
-                <i class="fas fa-credit-card"></i> Proceed to Checkout
+                Proceed to Checkout
             </button>
         </div>
     </div>
@@ -650,12 +563,12 @@
     <div id="checkoutModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeCheckout()">&times;</span>
-            <h2 style="margin-bottom: 1rem; color: #3b82f6;">
-                <i class="fas fa-credit-card"></i> Secure Checkout
+            <h2 style="margin-bottom: 1rem; color: #1a365d;">
+                Secure Checkout
             </h2>
             
             <div class="payment-info">
-                <h4><i class="fas fa-university"></i> Payment Information</h4>
+                <h4>Payment Information</h4>
                 <p><strong>Bank Details:</strong> ANZ Bank</p>
                 <p><strong>Account Name:</strong> Lure Kings Pty Ltd</p>
                 <p><strong>BSB:</strong> 012-345</p>
@@ -668,28 +581,28 @@
             <div class="checkout-form">
                 <form id="checkoutForm">
                     <div class="form-group">
-                        <label for="customerName"><i class="fas fa-user"></i> Full Name</label>
+                        <label for="customerName">Full Name</label>
                         <input type="text" id="customerName" required>
                     </div>
                     <div class="form-group">
-                        <label for="customerEmail"><i class="fas fa-envelope"></i> Email Address</label>
+                        <label for="customerEmail">Email Address</label>
                         <input type="email" id="customerEmail" required>
                     </div>
                     <div class="form-group">
-                        <label for="customerPhone"><i class="fas fa-phone"></i> Phone Number</label>
+                        <label for="customerPhone">Phone Number</label>
                         <input type="tel" id="customerPhone" required>
                     </div>
                     <div class="form-group">
-                        <label for="customerAddress"><i class="fas fa-map-marker-alt"></i> Delivery Address</label>
+                        <label for="customerAddress">Delivery Address</label>
                         <textarea id="customerAddress" rows="3" required></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="orderNotes"><i class="fas fa-sticky-note"></i> Order Notes (Optional)</label>
+                        <label for="orderNotes">Order Notes (Optional)</label>
                         <textarea id="orderNotes" rows="2" placeholder="Any special instructions..."></textarea>
                     </div>
                     <div class="cart-total" id="checkoutTotal">Total: $0.00</div>
                     <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
-                        <i class="fas fa-check-circle"></i> Place Order
+                        Place Order
                     </button>
                 </form>
             </div>
@@ -700,6 +613,8 @@
         // Global variables
         let isAdminLoggedIn = false;
         const ADMIN_PASSWORD = "lureking2024";
+        let clickCount = 0;
+        let clickTimeout;
         
         let products = [
             {
@@ -733,22 +648,6 @@
                 price: 11.79,
                 description: "Classic spinnerbait with Colorado blade for maximum flash and vibration.",
                 image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=300&fit=crop"
-            },
-            {
-                id: 5,
-                name: "Chatterbait Bladed Jig",
-                category: "vibrating-bladed-jigs",
-                price: 13.99,
-                description: "Vibrating bladed jig that creates unique sound and action underwater.",
-                image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop"
-            },
-            {
-                id: 6,
-                name: "Deep Diving Crankbait",
-                category: "crankbaits",
-                price: 16.49,
-                description: "Reaches deep water where big fish hide, with realistic swimming action.",
-                image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop"
             }
         ];
 
@@ -765,8 +664,26 @@
             updateCartCount();
             renderAdminProducts();
             setupEventListeners();
-            checkAdminAccess();
             setupImageUpload();
+            
+            // Add crown click listener
+            document.getElementById('logo').addEventListener('click', handleCrownClick);
+        }
+
+        function handleCrownClick() {
+            clickCount++;
+            
+            // Reset counter after 1 second
+            clearTimeout(clickTimeout);
+            clickTimeout = setTimeout(() => {
+                clickCount = 0;
+            }, 1000);
+            
+            // If clicked 3 times, show admin login
+            if (clickCount >= 3) {
+                clickCount = 0;
+                showAdminLogin();
+            }
         }
 
         function setupEventListeners() {
@@ -783,7 +700,7 @@
             });
 
             // Admin login form submission
-            document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+            document.getElementById('adminLoginForm')?.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const password = document.getElementById('adminPassword').value;
                 if (password === ADMIN_PASSWORD) {
@@ -861,7 +778,7 @@
             }
             
             updateCartCount();
-            showCartNotification(product.name);
+            showToast(`${product.name} added to cart`);
         }
 
         function updateCartCount() {
@@ -869,9 +786,14 @@
             document.getElementById('cartCount').textContent = count;
         }
 
-        function showCartNotification(productName) {
-            // Could implement a toast notification here
-            console.log(`${productName} added to cart`);
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
         }
 
         function showCart() {
@@ -963,7 +885,7 @@
             // Generate order number
             const orderNumber = 'LK-' + Date.now().toString().slice(-6);
             
-            // In a real app, you would send this data to your server
+            // Prepare order details
             const order = {
                 orderNumber,
                 customer: { name, email },
@@ -972,7 +894,12 @@
                 date: new Date().toISOString()
             };
             
+            // In a real app, you would send this data to your server
             console.log('Order placed:', order);
+            
+            // Send email (simulated - in a real app you would use a backend service)
+            sendOrderEmail(order);
+            
             alert(`Order #${orderNumber} placed successfully!\nA confirmation has been sent to ${email}`);
             
             // Reset cart and close modals
@@ -982,18 +909,41 @@
             document.getElementById('checkoutForm').reset();
         }
 
+        function sendOrderEmail(order) {
+            // This is a simulation - in a real app you would use a backend service
+            // to send emails to both the customer and your business email
+            
+            const emailContent = `
+                Order #${order.orderNumber}
+                Date: ${new Date(order.date).toLocaleString()}
+                Customer: ${order.customer.name}
+                Email: ${order.customer.email}
+                
+                Items:
+                ${order.items.map(item => `
+                - ${item.name} (${item.quantity} x $${item.price.toFixed(2)}) = $${(item.quantity * item.price).toFixed(2)}
+                `).join('')}
+                
+                Total: $${order.total.toFixed(2)}
+                
+                Thank you for your order!
+                Lure Kings Team
+            `;
+            
+            console.log('Email sent to customer:', order.customer.email);
+            console.log('Email sent to business:', 'lure.kings.fishing.aus@gmail.com');
+            console.log('Email content:', emailContent);
+        }
+
         // Admin functionality
         function showAdminLogin() {
-            document.getElementById('adminLoginModal').style.display = 'block';
-        }
-
-        function closeAdminLogin() {
-            document.getElementById('adminLoginModal').style.display = 'none';
-        }
-
-        function checkAdminAccess() {
-            if (window.location.hash === '#admin') {
-                showAdminLogin();
+            // Create a simple password prompt
+            const password = prompt("Enter admin password:");
+            if (password === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
+                showView('admin');
+            } else if (password !== null) {
+                alert('Incorrect password!');
             }
         }
 
@@ -1016,7 +966,7 @@
                         <p>Price: $${product.price.toFixed(2)}</p>
                         <p>${product.description}</p>
                         <button onclick="editProduct(${product.id})" class="btn btn-secondary">Edit</button>
-                        <button onclick="deleteProduct(${product.id})" class="btn btn-secondary" style="background: #ef4444;">Delete</button>
+                        <button onclick="deleteProduct(${product.id})" class="btn btn-secondary" style="background: #e74c3c;">Delete</button>
                     </div>
                 `;
                 container.appendChild(productElement);
@@ -1101,16 +1051,16 @@
             
             uploadArea.addEventListener('dragover', (e) => {
                 e.preventDefault();
-                uploadArea.classList.add('dragover');
+                uploadArea.style.borderColor = '#1a365d';
             });
             
             uploadArea.addEventListener('dragleave', () => {
-                uploadArea.classList.remove('dragover');
+                uploadArea.style.borderColor = '#ddd';
             });
             
             uploadArea.addEventListener('drop', (e) => {
                 e.preventDefault();
-                uploadArea.classList.remove('dragover');
+                uploadArea.style.borderColor = '#ddd';
                 
                 if (e.dataTransfer.files.length) {
                     fileInput.files = e.dataTransfer.files;
