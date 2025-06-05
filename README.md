@@ -240,6 +240,7 @@
             border-radius: 8px;
             padding: 2rem;
             max-width: 90%;
+            width: 600px;
             max-height: 90%;
             overflow-y: auto;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
@@ -351,6 +352,10 @@
             font-weight: 600;
             color: #1a365d;
         }
+        .form-group label .required-star {
+            color: #e74c3c;
+            margin-left: 2px;
+        }
 
         .form-group input, .form-group textarea, .form-group select {
             width: 100%;
@@ -407,6 +412,13 @@
             color: #1a365d;
             margin-bottom: 0.5rem;
         }
+        
+        .payment-method {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
 
         .toast {
             position: fixed;
@@ -418,7 +430,13 @@
             border-radius: 4px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             z-index: 3000;
-            display: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
         }
 
         .admin-logo {
@@ -456,6 +474,9 @@
             .products-grid {
                 grid-template-columns: 1fr;
             }
+            .modal-content {
+                width: 95%;
+            }
         }
     </style>
 </head>
@@ -479,7 +500,6 @@
     <div class="toast" id="toast">Item added to cart!</div>
 
     <div class="container">
-        <!-- Store View -->
         <div id="storeView">
             <div class="hero">
                 <h1>Premium Fishing Lures</h1>
@@ -497,7 +517,6 @@
             <div class="products-grid" id="productsGrid"></div>
         </div>
 
-        <!-- Admin View -->
         <div id="adminView" class="hidden">
             <div class="hero">
                 <div class="admin-logo">
@@ -519,8 +538,9 @@
             </div>
 
             <div class="admin-form">
-                <h2 style="margin-bottom: 1rem; color: #1a365d;">Add New Product</h2>
+                <h2 style="margin-bottom: 1rem; color: #1a365d;">Add/Edit Product</h2>
                 <form id="productForm">
+                    <input type="hidden" id="productId">
                     <div class="form-group">
                         <label for="productName">Product Name</label>
                         <input type="text" id="productName" required>
@@ -551,11 +571,11 @@
                             <p style="font-size: 0.9rem; opacity: 0.7;">Supports JPG, PNG, GIF</p>
                         </div>
                         <input type="file" id="imageUpload" accept="image/*" style="display: none;">
-                        <input type="url" id="productImage" placeholder="Or enter image URL">
+                        <input type="text" id="productImageURL" placeholder="Or enter image URL">
                         <img id="imagePreview" class="image-preview" style="display: none;">
                     </div>
                     <button type="submit" class="btn btn-primary" style="width: 100%;">
-                        Add Product
+                        Save Product
                     </button>
                 </form>
             </div>
@@ -567,7 +587,6 @@
         </div>
     </div>
 
-    <!-- Cart Modal -->
     <div id="cartModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeCart()">&times;</span>
@@ -582,7 +601,6 @@
         </div>
     </div>
 
-    <!-- Checkout Modal -->
     <div id="checkoutModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeCheckout()">&times;</span>
@@ -590,18 +608,6 @@
                 Secure Checkout
             </h2>
             
-            <div class="payment-info">
-                <h4>Payment Information</h4>
-                <p><strong>Bank Details:</strong> ANZ Bank</p>
-                <p><strong>Account Name:</strong> Lure Kings Pty Ltd</p>
-                <p><strong>BSB:</strong> 012-345</p>
-                <p><strong>Account Number:</strong> 123456789</p>
-                <p style="margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.8;">
-                    Use your order number as the payment reference
-                </p>
-            </div>
-
-            <!-- Using FormSubmit to send emails -->
             <form id="checkoutForm" action="https://formsubmit.co/lure.kings.fishing.aus@gmail.com" method="POST">
                 <input type="hidden" name="_subject" value="New Order from Lure Kings">
                 <input type="hidden" name="_template" value="table">
@@ -610,32 +616,59 @@
                 <input type="hidden" name="_autoresponse" value="Thank you for your order! We'll process it shortly.">
                 
                 <div class="form-group">
-                    <label for="customerName">Full Name</label>
+                    <label for="customerName">Full Name<span class="required-star">*</span></label>
                     <input type="text" id="customerName" name="name" required>
                 </div>
                 <div class="form-group">
-                    <label for="customerEmail">Email Address</label>
+                    <label for="customerEmail">Email Address<span class="required-star">*</span></label>
                     <input type="email" id="customerEmail" name="email" required>
                 </div>
                 <div class="form-group">
-                    <label for="customerPhone">Phone Number</label>
-                    <input type="tel" id="customerPhone" name="phone" required>
+                    <label for="customerPhone">Phone Number<span class="required-star">*</span></label>
+                    <input type="tel" id="customerPhone" name="phone" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
                 </div>
                 <div class="form-group">
-                    <label for="customerAddress">Delivery Address</label>
+                    <label for="customerAddress">Delivery Address<span class="required-star">*</span></label>
                     <textarea id="customerAddress" name="address" rows="3" required></textarea>
                 </div>
                 <div class="form-group">
                     <label for="orderNotes">Order Notes (Optional)</label>
                     <textarea id="orderNotes" name="notes" rows="2" placeholder="Any special instructions..."></textarea>
                 </div>
+
+                <div class="form-group payment-info">
+                    <h4>Payment Method<span class="required-star">*</span></h4>
+                    <div class="payment-method">
+                        <input type="radio" id="bankTransfer" name="payment_method" value="Bank Transfer" required>
+                        <label for="bankTransfer">Direct Bank Transfer</label>
+                        <div id="bankDetails" class="hidden" style="padding-left: 20px; font-size: 0.9em; opacity: 0.8;">
+                            <p><strong>Bank:</strong> ANZ Bank | <strong>Account:</strong> Lure Kings Pty Ltd<br>
+                               <strong>BSB:</strong> 012-345 | <strong>Acc No:</strong> 123456789<br>
+                               Use your Order ID as reference.</p>
+                        </div>
+                    </div>
+                    <div class="payment-method">
+                        <input type="radio" id="stripe" name="payment_method" value="Stripe">
+                        <label for="stripe">Stripe (Credit/Debit Card)</label>
+                        <div id="stripe-element" class="hidden" style="padding: 10px;">
+                            </div>
+                    </div>
+                     <div class="payment-method">
+                        <input type="radio" id="paypal" name="payment_method" value="PayPal">
+                        <label for="paypal">PayPal</label>
+                        <div id="paypal-button-container" class="hidden" style="padding: 10px;">
+                            </div>
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <label>Order Items</label>
+                    <label>Order Summary</label>
                     <div id="orderItemsDisplay"></div>
                 </div>
                 <div class="cart-total" id="checkoutTotal">Total: $0.00</div>
                 <input type="hidden" id="orderItems" name="order_items">
                 <input type="hidden" id="orderTotal" name="order_total">
+                
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
                     Place Order
                 </button>
@@ -644,192 +677,111 @@
     </div>
 
     <script>
-        // Global variables
+        // --- GLOBAL STATE ---
         let isAdminLoggedIn = false;
-        const ADMIN_PASSWORD = "lureking2024";
+        const ADMIN_PASSWORD = "Maxchingershambo08";
         let clickCount = 0;
         let clickTimeout;
-        
-        let products = [
-            {
-                id: 1,
-                name: "Bass Pro Jig Head",
-                category: "jigs",
-                price: 12.99,
-                description: "Premium jig head perfect for bass fishing with realistic action.",
-                image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop"
-            },
-            {
-                id: 2,
-                name: "Soft Plastic Worm",
-                category: "soft-plastics",
-                price: 8.49,
-                description: "Lifelike soft plastic worm that attracts fish with its natural movement.",
-                image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=300&fit=crop"
-            },
-            {
-                id: 3,
-                name: "Popper Topwater Lure",
-                category: "topwaters",
-                price: 15.99,
-                description: "Creates explosive surface action that drives fish wild.",
-                image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop"
-            },
-            {
-                id: 4,
-                name: "Colorado Spinnerbait",
-                category: "spinnerbaits",
-                price: 11.79,
-                description: "Classic spinnerbait with Colorado blade for maximum flash and vibration.",
-                image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=300&fit=crop"
-            }
-        ];
-
+        let products = [];
         let cart = [];
         let currentFilter = 'all';
+        
+        // --- INITIAL DATA (FALLBACK) ---
+        const defaultProducts = [
+            { id: 1, name: "Bass Pro Jig Head", category: "jigs", price: 12.99, description: "Premium jig head perfect for bass fishing with realistic action.", image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop" },
+            { id: 2, name: "Soft Plastic Worm", category: "soft-plastics", price: 8.49, description: "Lifelike soft plastic worm that attracts fish with its natural movement.", image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=300&fit=crop" },
+            { id: 3, name: "Popper Topwater Lure", category: "topwaters", price: 15.99, description: "Creates explosive surface action that drives fish wild.", image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop" },
+            { id: 4, name: "Colorado Spinnerbait", category: "spinnerbaits", price: 11.79, description: "Classic spinnerbait with Colorado blade for maximum flash and vibration.", image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=300&fit=crop" }
+        ];
 
-        // Initialize the app when page loads
+        // --- APP INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', function() {
             init();
         });
 
         function init() {
-            renderProducts();
-            updateCartCount();
-            renderAdminProducts();
-            setupEventListeners();
-            setupImageUpload();
-            setupLogoUpload();
-            
-            // Add crown click listener
-            document.getElementById('logo').addEventListener('click', handleCrownClick);
-            
-            // Load saved logo from localStorage if exists
+            // Load data from localStorage
+            const storedProducts = localStorage.getItem('products');
+            products = storedProducts ? JSON.parse(storedProducts) : defaultProducts;
+
+            const storedCart = localStorage.getItem('cart');
+            cart = storedCart ? JSON.parse(storedCart) : [];
+
             const savedLogo = localStorage.getItem('companyLogo');
             if (savedLogo) {
                 document.getElementById('companyLogo').src = savedLogo;
                 document.getElementById('logoPreview').src = savedLogo;
                 document.getElementById('logoPreview').style.display = 'block';
             }
-        }
+            
+            // Render initial views
+            renderProducts();
+            updateCartCount();
+            renderAdminProducts();
+            
+            // Setup listeners
+            setupEventListeners();
+            setupImageUpload('imageUpload', 'imagePreview', 'productImageURL', '.admin-form .file-upload-area');
+            setupImageUpload('logoUpload', 'logoPreview', null, '.logo-upload-container .file-upload-area', handleLogoUpload);
 
-        function handleCrownClick() {
-            clickCount++;
-            
-            // Reset counter after 1 second
-            clearTimeout(clickTimeout);
-            clickTimeout = setTimeout(() => {
-                clickCount = 0;
-            }, 1000);
-            
-            // If clicked 3 times, show admin login
-            if (clickCount >= 3) {
-                clickCount = 0;
-                showAdminLogin();
+            // Handle order success message
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('order') && urlParams.get('order') === 'success') {
+                showToast("Thank you! Your order has been placed successfully.");
             }
         }
 
+        // --- EVENT LISTENERS ---
         function setupEventListeners() {
-            // Admin form submission
+            document.getElementById('logo').addEventListener('click', handleCrownClick);
+            
             document.getElementById('productForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                addProduct();
+                saveProduct();
             });
 
-            // Checkout form submission
             document.getElementById('checkoutForm').addEventListener('submit', function(e) {
-                // Prepare order details for email
-                const orderItems = cart.map(item => 
-                    `${item.name} (${item.quantity} x $${item.price.toFixed(2)}) = $${(item.quantity * item.price).toFixed(2)}`
-                ).join('\n');
-                
-                document.getElementById('orderItems').value = orderItems;
-                document.getElementById('orderTotal').value = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
-                
-                // Reset cart after submission
-                cart = [];
-                updateCartCount();
-                localStorage.setItem('cart', JSON.stringify(cart));
-            });
-
-            // Image upload handling
-            document.getElementById('imageUpload').addEventListener('change', function(e) {
-                handleImageUpload(e);
-            });
-        }
-
-        function setupLogoUpload() {
-            const uploadArea = document.querySelector('.logo-upload-container .file-upload-area');
-            const fileInput = document.getElementById('logoUpload');
-            const preview = document.getElementById('logoPreview');
-            const logoDisplay = document.getElementById('companyLogo');
-            
-            uploadArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                uploadArea.style.borderColor = '#1a365d';
-            });
-            
-            uploadArea.addEventListener('dragleave', () => {
-                uploadArea.style.borderColor = '#ddd';
-            });
-            
-            uploadArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                uploadArea.style.borderColor = '#ddd';
-                
-                if (e.dataTransfer.files.length) {
-                    fileInput.files = e.dataTransfer.files;
-                    handleLogoUpload({ target: fileInput });
+                const selectedPayment = document.querySelector('input[name="payment_method"]:checked');
+                if (!selectedPayment) {
+                    e.preventDefault();
+                    alert("Please select a payment method.");
+                    return;
                 }
+                prepareOrderForSubmission();
             });
             
-            fileInput.addEventListener('change', handleLogoUpload);
+            document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    document.getElementById('bankDetails').classList.toggle('hidden', e.target.id !== 'bankTransfer');
+                    document.getElementById('stripe-element').classList.toggle('hidden', e.target.id !== 'stripe');
+                    document.getElementById('paypal-button-container').classList.toggle('hidden', e.target.id !== 'paypal');
+                });
+            });
         }
 
-        function handleLogoUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            if (!file.type.match('image.*')) {
-                alert('Please select an image file');
-                return;
-            }
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const preview = document.getElementById('logoPreview');
-                const logoDisplay = document.getElementById('companyLogo');
-                
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-                
-                logoDisplay.src = e.target.result;
-                
-                // Save to localStorage
-                localStorage.setItem('companyLogo', e.target.result);
-            };
-            reader.readAsDataURL(file);
+        // --- PRODUCT & DATA PERSISTENCE ---
+        function saveProductsToStorage() {
+            localStorage.setItem('products', JSON.stringify(products));
         }
 
-        // View management
+        function saveCartToStorage() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        // --- VIEW MANAGEMENT ---
         function showView(view) {
             if (view === 'admin' && !isAdminLoggedIn) {
                 showAdminLogin();
                 return;
             }
-            
             document.getElementById('storeView').classList.toggle('hidden', view !== 'store');
             document.getElementById('adminView').classList.toggle('hidden', view !== 'admin');
         }
 
-        // Product rendering
         function renderProducts() {
             const grid = document.getElementById('productsGrid');
             grid.innerHTML = '';
-            
-            const filteredProducts = currentFilter === 'all' 
-                ? products 
-                : products.filter(p => p.category === currentFilter);
+            const filteredProducts = currentFilter === 'all' ? products : products.filter(p => p.category === currentFilter);
             
             filteredProducts.forEach(product => {
                 const card = document.createElement('div');
@@ -850,14 +802,15 @@
         function filterByCategory(category) {
             currentFilter = category;
             renderProducts();
-            
-            // Update active state of category buttons
             document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.textContent.toLowerCase().includes(category));
+                btn.classList.remove('active');
+                if (btn.textContent.toLowerCase().includes(category)) {
+                    btn.classList.add('active');
+                }
             });
         }
 
-        // Cart functionality
+        // --- CART FUNCTIONALITY ---
         function addToCart(productId) {
             const product = products.find(p => p.id === productId);
             if (!product) return;
@@ -871,40 +824,26 @@
             
             updateCartCount();
             showToast(`${product.name} added to cart`);
-            localStorage.setItem('cart', JSON.stringify(cart));
+            saveCartToStorage();
         }
 
         function updateCartCount() {
             const count = cart.reduce((total, item) => total + item.quantity, 0);
             document.getElementById('cartCount').textContent = count;
         }
-
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.style.display = 'block';
-            
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 3000);
-        }
-
+        
         function showCart() {
             const modal = document.getElementById('cartModal');
             const cartItems = document.getElementById('cartItems');
-            const cartTotal = document.getElementById('cartTotal');
-            const orderItemsDisplay = document.getElementById('orderItemsDisplay');
+            const cartTotalEl = document.getElementById('cartTotal');
             
             cartItems.innerHTML = '';
             
             if (cart.length === 0) {
                 cartItems.innerHTML = '<p>Your cart is empty</p>';
-                cartTotal.textContent = 'Total: $0.00';
-                orderItemsDisplay.innerHTML = '<p>No items</p>';
+                cartTotalEl.textContent = 'Total: $0.00';
             } else {
                 let total = 0;
-                let orderItemsHTML = '<ul style="list-style-type: none; padding: 0;">';
-                
                 cart.forEach(item => {
                     const itemTotal = item.price * item.quantity;
                     total += itemTotal;
@@ -921,26 +860,16 @@
                                 <span>${item.quantity}</span>
                                 <button class="quantity-btn" onclick="updateCartItem(${item.id}, 1)">+</button>
                             </div>
-                            <div>$${itemTotal.toFixed(2)}</div>
                         </div>
-                        <button class="remove-item" onclick="removeFromCart(${item.id})">Remove</button>
+                        <div>
+                           <div style="font-weight: bold; text-align: right;">$${itemTotal.toFixed(2)}</div>
+                           <button class="remove-item" style="margin-top: 5px;" onclick="removeFromCart(${item.id})">Remove</button>
+                        </div>
                     `;
                     cartItems.appendChild(cartItem);
-                    
-                    orderItemsHTML += `
-                        <li style="margin-bottom: 0.5rem; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">
-                            ${item.name} - ${item.quantity} x $${item.price.toFixed(2)} = $${itemTotal.toFixed(2)}
-                        </li>
-                    `;
                 });
-                
-                orderItemsHTML += '</ul>';
-                orderItemsDisplay.innerHTML = orderItemsHTML;
-                
-                cartTotal.textContent = `Total: $${total.toFixed(2)}`;
-                document.getElementById('checkoutTotal').textContent = `Total: $${total.toFixed(2)}`;
+                cartTotalEl.textContent = `Total: $${total.toFixed(2)}`;
             }
-            
             modal.style.display = 'block';
         }
 
@@ -959,7 +888,7 @@
             } else {
                 updateCartCount();
                 showCart(); // Refresh cart display
-                localStorage.setItem('cart', JSON.stringify(cart));
+                saveCartToStorage();
             }
         }
 
@@ -967,11 +896,29 @@
             cart = cart.filter(item => item.id !== productId);
             updateCartCount();
             showCart(); // Refresh cart display
-            localStorage.setItem('cart', JSON.stringify(cart));
+            saveCartToStorage();
         }
 
-        // Checkout functionality
+        // --- CHECKOUT FUNCTIONALITY ---
         function showCheckout() {
+            if (cart.length === 0) {
+                alert("Your cart is empty. Please add items before checking out.");
+                return;
+            }
+            const orderItemsDisplay = document.getElementById('orderItemsDisplay');
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            let orderItemsHTML = '<ul style="list-style-type: none; padding: 0;">';
+             cart.forEach(item => {
+                orderItemsHTML += `<li style="margin-bottom: 0.5rem; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">
+                    ${item.name} - ${item.quantity} x $${item.price.toFixed(2)}
+                </li>`;
+            });
+            orderItemsHTML += '</ul>';
+            orderItemsDisplay.innerHTML = orderItemsHTML;
+
+            document.getElementById('checkoutTotal').textContent = `Total: $${total.toFixed(2)}`;
+            
             closeCart();
             document.getElementById('checkoutModal').style.display = 'block';
         }
@@ -979,10 +926,35 @@
         function closeCheckout() {
             document.getElementById('checkoutModal').style.display = 'none';
         }
+        
+        function prepareOrderForSubmission() {
+            const orderSummary = cart.map(item => 
+                `${item.name} (Qty: ${item.quantity} x $${item.price.toFixed(2)}) = $${(item.quantity * item.price).toFixed(2)}`
+            ).join('\n');
+            
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
 
-        // Admin functionality
+            document.getElementById('orderItems').value = orderSummary;
+            document.getElementById('orderTotal').value = `$${total}`;
+
+            // Clear cart after preparing for submission
+            cart = [];
+            updateCartCount();
+            saveCartToStorage();
+        }
+
+        // --- ADMIN FUNCTIONALITY ---
+        function handleCrownClick() {
+            clickCount++;
+            clearTimeout(clickTimeout);
+            clickTimeout = setTimeout(() => { clickCount = 0; }, 1000);
+            if (clickCount >= 3) {
+                clickCount = 0;
+                showAdminLogin();
+            }
+        }
+
         function showAdminLogin() {
-            // Create a simple password prompt
             const password = prompt("Enter admin password:");
             if (password === ADMIN_PASSWORD) {
                 isAdminLoggedIn = true;
@@ -1001,139 +973,150 @@
                 return;
             }
             
-            products.forEach(product => {
+            products.slice().reverse().forEach(product => {
                 const productElement = document.createElement('div');
                 productElement.className = 'product-card';
                 productElement.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}" class="product-image">
                     <div class="product-info">
                         <h3 class="product-title">${product.name}</h3>
-                        <p>Category: ${product.category}</p>
-                        <p>Price: $${product.price.toFixed(2)}</p>
-                        <p>${product.description}</p>
-                        <button onclick="editProduct(${product.id})" class="btn btn-secondary">Edit</button>
-                        <button onclick="deleteProduct(${product.id})" class="btn btn-secondary" style="background: #e74c3c;">Delete</button>
+                        <p style="font-size:0.9em; color:#666">${product.category}</p>
+                        <p style="font-weight:bold; color: #e74c3c;">$${product.price.toFixed(2)}</p>
+                        <div style="margin-top: 1rem;">
+                           <button onclick="editProduct(${product.id})" class="btn btn-secondary">Edit</button>
+                           <button onclick="deleteProduct(${product.id})" class="btn btn-secondary" style="background: #e74c3c;">Delete</button>
+                        </div>
                     </div>
                 `;
                 container.appendChild(productElement);
             });
         }
-
-        function addProduct() {
+        
+        function saveProduct() {
+            const id = document.getElementById('productId').value;
             const name = document.getElementById('productName').value;
             const category = document.getElementById('productCategory').value;
             const price = parseFloat(document.getElementById('productPrice').value);
             const description = document.getElementById('productDescription').value;
-            let image = document.getElementById('productImage').value;
-            
-            // Use uploaded image if available
-            const uploadedImage = document.getElementById('imagePreview').src;
-            if (uploadedImage && !uploadedImage.includes('data:')) {
-                image = uploadedImage;
-            }
+            const image = document.getElementById('productImageURL').value;
             
             if (!name || !category || isNaN(price) || !description || !image) {
-                alert('Please fill all fields');
+                alert('Please fill all fields and provide an image URL or upload.');
                 return;
             }
+
+            if (id) { // Editing existing product
+                const index = products.findIndex(p => p.id == id);
+                if (index > -1) {
+                    products[index] = { ...products[index], name, category, price, description, image };
+                }
+            } else { // Adding new product
+                 const newProduct = {
+                    id: Date.now(), // Use timestamp for a unique ID
+                    name, category, price, description, image
+                };
+                products.push(newProduct);
+            }
             
-            const newProduct = {
-                id: products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1,
-                name,
-                category,
-                price,
-                description,
-                image
-            };
-            
-            products.push(newProduct);
+            saveProductsToStorage();
             renderProducts();
             renderAdminProducts();
             
-            // Reset form
             document.getElementById('productForm').reset();
+            document.getElementById('productId').value = '';
             document.getElementById('imagePreview').style.display = 'none';
-            alert('Product added successfully!');
+            showToast(id ? 'Product updated successfully!' : 'Product added successfully!');
         }
 
         function editProduct(id) {
             const product = products.find(p => p.id === id);
             if (!product) return;
             
-            // Fill the form with product data
+            document.getElementById('productId').value = product.id;
             document.getElementById('productName').value = product.name;
             document.getElementById('productCategory').value = product.category;
             document.getElementById('productPrice').value = product.price;
             document.getElementById('productDescription').value = product.description;
-            document.getElementById('productImage').value = product.image;
+            document.getElementById('productImageURL').value = product.image;
             
-            // Show image preview if exists
-            if (product.image) {
-                const preview = document.getElementById('imagePreview');
-                preview.src = product.image;
-                preview.style.display = 'block';
-            }
+            const preview = document.getElementById('imagePreview');
+            preview.src = product.image;
+            preview.style.display = 'block';
             
-            // Remove the product (will be re-added when form is submitted)
-            products = products.filter(p => p.id !== id);
-            
-            // Scroll to form
-            document.getElementById('productForm').scrollIntoView();
+            document.getElementById('productForm').scrollIntoView({ behavior: 'smooth' });
         }
 
         function deleteProduct(id) {
-            if (!confirm('Are you sure you want to delete this product?')) return;
+            if (!confirm('Are you sure you want to delete this product? This action cannot be undone.')) return;
             
             products = products.filter(p => p.id !== id);
+            saveProductsToStorage();
             renderProducts();
             renderAdminProducts();
+            showToast('Product deleted successfully.');
         }
 
-        // Image upload handling
-        function setupImageUpload() {
-            const uploadArea = document.querySelector('.admin-form .file-upload-area');
-            const fileInput = document.getElementById('imageUpload');
-            const preview = document.getElementById('imagePreview');
-            
-            uploadArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                uploadArea.style.borderColor = '#1a365d';
-            });
-            
-            uploadArea.addEventListener('dragleave', () => {
-                uploadArea.style.borderColor = '#ddd';
-            });
-            
-            uploadArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                uploadArea.style.borderColor = '#ddd';
-                
-                if (e.dataTransfer.files.length) {
-                    fileInput.files = e.dataTransfer.files;
-                    handleImageUpload({ target: fileInput });
-                }
-            });
+        // --- UTILITY FUNCTIONS ---
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
         }
 
-        function handleImageUpload(event) {
+        function setupImageUpload(inputId, previewId, urlInputId, areaSelector, customHandler) {
+            const fileInput = document.getElementById(inputId);
+            const uploadArea = document.querySelector(areaSelector);
+
+            const handler = customHandler || function(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById(previewId).src = e.target.result;
+                    document.getElementById(previewId).style.display = 'block';
+                    if (urlInputId) {
+                        document.getElementById(urlInputId).value = e.target.result;
+                    }
+                };
+                reader.readAsDataURL(file);
+            };
+
+            fileInput.addEventListener('change', handler);
+            uploadArea.addEventListener('click', () => fileInput.click());
+
+            ['dragover', 'drop', 'dragleave'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (eventName === 'dragover') uploadArea.style.borderColor = '#1a365d';
+                    else uploadArea.style.borderColor = '#ddd';
+                    if (eventName === 'drop' && e.dataTransfer.files.length) {
+                        fileInput.files = e.dataTransfer.files;
+                        handler({ target: fileInput });
+                    }
+                });
+            });
+        }
+        
+        function handleLogoUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
             
-            if (!file.type.match('image.*')) {
-                alert('Please select an image file');
-                return;
-            }
-            
             const reader = new FileReader();
             reader.onload = function(e) {
-                const preview = document.getElementById('imagePreview');
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-                
-                // Also set the image URL field
-                document.getElementById('productImage').value = e.target.result;
+                const logoUrl = e.target.result;
+                document.getElementById('logoPreview').src = logoUrl;
+                document.getElementById('logoPreview').style.display = 'block';
+                document.getElementById('companyLogo').src = logoUrl;
+                localStorage.setItem('companyLogo', logoUrl); // Persist logo
             };
             reader.readAsDataURL(file);
         }
+
     </script>
 </body>
 </html>
